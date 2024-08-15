@@ -1,13 +1,18 @@
 #!/usr/bin/python3
-"""Rotate a 2D matrix by 90 degrees"""
+""" Rotate 2D Matrix
+"""
 
 
-def rotate_2d_matrix(matrix: list):
-    """Rotate a 2D matrix by 90 degrees"""
-    length = len(matrix[0])
-    matrix.extend([[] for _ in range(length)])
+def rotate_2d_matrix(matrix):
+    """ Given an n x n 2D matrix, rotate it 90 degrees clockwise
+    """
+    for x, y in enumerate(zip(*reversed(matrix))):
+        matrix[x] = list(y)
 
-    for i in range(len(matrix), len(matrix) - length, -1):
-        for j in range(len(matrix) - length, 0, -1):
-            matrix[i - 1].append(matrix[j - 1].pop())
-    del matrix[0 : len(matrix) - length]
+
+if __name__ == '__main__':
+    matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+
+    """ rotate_2d_matrix(matrix) """
+    rotate_2d_matrix(matrix)
+    print(matrix)
