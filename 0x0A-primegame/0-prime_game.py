@@ -1,43 +1,57 @@
 #!/usr/bin/python3
-"""
-Prime Game Module
-"""
+"""Module defining isWinner function."""
 
 
 def isWinner(x, nums):
-    """
-    Prime Game Function
-    """
-    maria = 0
-    ben = 0
+    """Function to get who has won in prime game"""
+    mariaWinsCount = 0
+    benWinsCount = 0
 
-    def SieveOfEratosthenes(n):
-        """Sieve of Eratosthenes Function"""
+    for num in nums:
+        roundsSet = list(range(1, num + 1))
+        primesSet = primes_in_range(1, num)
 
-        prime = [True for i in range(n + 1)]
-        pointer = 2
-        while pointer * pointer <= n:
-            if prime[pointer] == True:
-                for i in range(pointer * pointer, n + 1, pointer):
-                    prime[i] = False
-            pointer += 1
-        prime[0] = False
-        prime[1] = False
-        return prime
+        if not primesSet:
+            benWinsCount += 1
+            continue
 
-    max_n = max(nums)
-    primes = SieveOfEratosthenes(max_n)
+        isMariaTurns = True
 
-    for round in nums:
-        round_primes = [i for i in range(round + 1) if primes[i]]
-        if len(round_primes) % 2 == 0:
-            ben += 1
-        else:
-            maria += 1
+        while(True):
+            if not primesSet:
+                if isMariaTurns:
+                    benWinsCount += 1
+                else:
+                    mariaWinsCount += 1
+                break
 
-    if maria > ben:
-        return "Maria"
-    elif ben > maria:
-        return "Ben"
+            smallestPrime = primesSet.pop(0)
+            roundsSet.remove(smallestPrime)
+
+            roundsSet = [x for x in roundsSet if x % smallestPrime != 0]
+
+            isMariaTurns = not isMariaTurns
+
+    if mariaWinsCount > benWinsCount:
+        return "Winner: Maria"
+
+    if mariaWinsCount < benWinsCount:
+        return "Winner: Ben"
 
     return None
+
+
+def is_prime(n):
+    """Returns True if n is prime, else False."""
+    if n < 2:
+        return False
+    for i in range(2, int(n ** 0.5) + 1):
+        if n % i == 0:
+            return False
+    return True
+
+
+def primes_in_range(start, end):
+    """Returns a list of prime numbers between start and end (inclusive)."""
+    primes = [n for n in range(start, end+1) if is_prime(n)]
+    return primes
