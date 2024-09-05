@@ -1,46 +1,42 @@
+#!/usr/bin/python3
+"""0. Prime Game - Maria and Ben are playing a game"""
+
+
 def isWinner(x, nums):
-    def compute_grundy_numbers(max_n):
-        grundies = [0] * (max_n + 1)
-        primes = []
-        
-        is_prime = [True] * (max_n + 1)
-        is_prime[0] = is_prime[1] = False
-        
-        for i in range(2, max_n + 1):
-            if is_prime[i]:
-                primes.append(i)
-                for multiple in range(i * i, max_n + 1, i):
-                    is_prime[multiple] = False
-        
-        for n in range(2, max_n + 1):
-            reachable = set()
-            for prime in primes:
-                if prime > n:
-                    break
-                for multiple in range(prime, n + 1, prime):
-                    reachable.add(grundies[n - multiple])
-            mex = 0
-            while mex in reachable:
-                mex += 1
-            grundies[n] = mex
-        
-        return grundies
-    
-    max_n = max(nums)
-    grundies = compute_grundy_numbers(max_n)
-    
-    maria_wins = 0
-    ben_wins = 0
-    
-    for n in nums:
-        if grundies[n] != 0:
-            maria_wins += 1
-        else:
-            ben_wins += 1
-    
-    if maria_wins > ben_wins:
-        return "Maria"
-    elif ben_wins > maria_wins:
-        return "Ben"
-    else:
+    """x - rounds
+    nums - numbers list
+    """
+    if x <= 0 or nums is None:
         return None
+    if x != len(nums):
+        return None
+
+    ben = 0
+    maria = 0
+
+    a = [1 for x in range(sorted(nums)[-1] + 1)]
+    a[0], a[1] = 0, 0
+    for i in range(2, len(a)):
+        rm_multiples(a, i)
+
+    for i in nums:
+        if sum(a[0:i + 1]) % 2 == 0:
+            ben += 1
+        else:
+            maria += 1
+    if ben > maria:
+        return "Ben"
+    if maria > ben:
+        return "Maria"
+    return None
+
+
+def rm_multiples(ls, x):
+    """removes multiple
+    of primes
+    """
+    for i in range(2, len(ls)):
+        try:
+            ls[i * x] = 0
+        except (ValueError, IndexError):
+            break
